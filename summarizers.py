@@ -172,7 +172,7 @@ class MemSum:
                             extracted = True
                             break
                                         
-                    if stop or not extracted:
+                    if stop or step == max_extracted_sentences_per_document or not extracted:
                         extracted_sentences.append( [ document_batch[doc_i][sen_i] for sen_i in  current_hyps if sen_i < len(document_batch[doc_i])    ] )
                         extracted_sentences_positions.append( [ sen_i for sen_i in  current_hyps if sen_i < len(document_batch[doc_i])  ]  )
                         break
