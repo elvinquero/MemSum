@@ -6,6 +6,14 @@ from src.MemSum_Full.datautils import Vocab as Vocab_MemSum_Full
 from src.MemSum_Full.datautils import SentenceTokenizer as SentenceTokenizer_MemSum_Full
 
 
+from transformers import LEDTokenizer
+
+tokenizer = LEDTokenizer.from_pretrained("allenai/led-base-16384-multi_lexsum-source-long", truncation=True, truncation_side='right', model_max_length=16384)
+
+def get_size(text):
+    inputs = tokenizer.encode(text, return_tensors="pt", truncation=True, max_length=16384).to("cuda")
+    return len(input)
+
 import torch.nn.functional as F
 from torch.distributions import Categorical
 
@@ -126,8 +134,9 @@ class MemSum:
                 sentence_score_history_for_doc_i = []
 
                 p_stop_history_for_doc_i = []
-                
-                for step in range( max_extracted_sentences_per_document+1 ) :
+                step = 0
+
+                while  get_size('. '.join(extracted_sentences)) < 16000:
                     current_extraction_mask = torch.from_numpy( current_extraction_mask_np ).to(self.device)
                     current_remaining_mask = torch.from_numpy( current_remaining_mask_np ).to(self.device)
                     if step > 0:
@@ -171,6 +180,7 @@ class MemSum:
                         current_hyps.append(sen_i)
                         current_extraction_mask_np[0, sen_i] = True
                         current_remaining_mask_np[0, sen_i] = False
+                    step += 1
 
                 sentence_score_history.append(sentence_score_history_for_doc_i)
                 p_stop_history.append( p_stop_history_for_doc_i )
