@@ -299,7 +299,8 @@ class ExtractiveSummarizer_NeuSum:
         
                 current_hyps = []
 
-                for step in range( max_extracted_sentences_per_document ) :
+                step = 0
+                while  get_size('\n'.join(extracted_sentences)) < 16000:
                     current_extraction_mask = torch.from_numpy( current_extraction_mask_np ).to(self.device)
                     current_remaining_mask = torch.from_numpy( current_remaining_mask_np ).to(self.device)
                     current_hidden_state  = self.extraction_context_decoder( current_extracted_sen_embed, current_hidden_state )
@@ -311,6 +312,7 @@ class ExtractiveSummarizer_NeuSum:
                     current_hyps.append(sen_i)
                     current_extraction_mask_np[0, sen_i] = True
                     current_remaining_mask_np[0, sen_i] = False
+                    step += 1
                     
                                         
                 extracted_sentences.append( [ document_batch[doc_i][sen_i] for sen_i in  current_hyps if sen_i < len(document_batch[doc_i])    ] )
