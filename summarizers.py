@@ -12,7 +12,7 @@ tokenizer = LEDTokenizer.from_pretrained("allenai/led-base-16384-multi_lexsum-so
 
 def get_size(text):
     inputs = tokenizer.encode(text, return_tensors="pt", truncation=True, max_length=16384).to("cuda")
-    return len(input)
+    return inputs.shape[1]
 
 import torch.nn.functional as F
 from torch.distributions import Categorical
@@ -136,7 +136,7 @@ class MemSum:
                 p_stop_history_for_doc_i = []
                 step = 0
 
-                while  get_size('. '.join(extracted_sentences)) < 16000:
+                while  get_size('\n'.join(extracted_sentences)) < 16000:
                     current_extraction_mask = torch.from_numpy( current_extraction_mask_np ).to(self.device)
                     current_remaining_mask = torch.from_numpy( current_remaining_mask_np ).to(self.device)
                     if step > 0:
